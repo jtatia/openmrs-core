@@ -15,6 +15,7 @@ import org.openmrs.User;
 import org.openmrs.Voidable;
 import org.openmrs.annotation.Handler;
 import org.openmrs.aop.RequiredDataAdvice;
+import org.openmrs.api.context.Context;
 
 /**
  * This is the super interface for all unvoid* actions that take place on all services. The
@@ -46,15 +47,15 @@ public class BaseUnvoidHandler implements UnvoidHandler<Voidable> {
 	 * @should unset the voidReason
 	 * @should only act on already voided objects
 	 * @should not act on objects with a different dateVoided
+	 * @should loose any changes made before unvoiding
 	 */
 	@Override
 	public void handle(Voidable voidableObject, User voidingUser, Date origParentVoidedDate, String unused) {
-		
 		// only operate on voided objects
 		if (voidableObject.getVoided()
 		        && (origParentVoidedDate == null || origParentVoidedDate.equals(voidableObject.getDateVoided()))) {
-			
 			// only unvoid objects that were voided at the same time as the parent object
+			Context.refreshEntity(voidableObject);
 			voidableObject.setVoided(false);
 			voidableObject.setVoidedBy(null);
 			voidableObject.setDateVoided(null);

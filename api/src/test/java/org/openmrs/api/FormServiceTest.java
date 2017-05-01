@@ -33,14 +33,7 @@ import java.util.Vector;
 import org.apache.commons.collections.ListUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.Field;
-import org.openmrs.FieldType;
-import org.openmrs.Form;
-import org.openmrs.FormField;
-import org.openmrs.FormResource;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Obs;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.obs.SerializableComplexObsHandler;
 import org.openmrs.test.BaseContextSensitiveTest;
@@ -1000,4 +993,25 @@ public class FormServiceTest extends BaseContextSensitiveTest {
 		Form duplicateForm = fs.duplicateForm(form);
 		assertEquals(form, duplicateForm);
 	}
+
+	@Test
+	public void changesBeforeRetiringForm_shouldBeLost()throws Exception {
+		Form form = Context.getFormService().getForm(1);
+		form.setName("NewName");
+		Context.getFormService().retireForm(form,"Testing");
+		assertTrue(form.getRetired());
+		Assert.assertNotEquals(form.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringForm_shouldBeLost()throws Exception {
+		Form form = Context.getFormService().getForm(1);
+		Context.getFormService().retireForm(form,"Testing");
+		assertTrue(form.getRetired());
+		form.setName("NewName");
+		Context.getFormService().unretireForm(form);
+		assertFalse(form.getRetired());
+		Assert.assertNotEquals(form.getName(),"NewName");
+	}
+
 }

@@ -25,11 +25,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Location;
-import org.openmrs.LocationAttribute;
-import org.openmrs.LocationAttributeType;
-import org.openmrs.LocationTag;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.test.BaseContextSensitiveTest;
@@ -1187,5 +1183,66 @@ public class LocationServiceTest extends BaseContextSensitiveTest {
 		locationService.retireLocation(location, "test retire reason");
 		Assert.assertFalse(tag.getRetired());
 	}
-	
+
+	@Test
+	public void changesBeforeRetiringLocation_shouldBeLost()throws Exception {
+		Location location = Context.getLocationService().getLocation(1);
+		location.setName("NewName");
+		Context.getLocationService().retireLocation(location,"Testing");
+		assertTrue(location.getRetired());
+		Assert.assertNotEquals(location.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringLocation_shouldBeLost()throws Exception {
+		executeDataSet(LOC_INITIAL_DATA_XML);
+		Location location = Context.getLocationService().getLocation(5);
+		assertTrue(location.getRetired());
+		location.setName("NewName");
+		Context.getLocationService().unretireLocation(location);
+		assertFalse(location.getRetired());
+		Assert.assertNotEquals(location.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeRetiringLocationTag_shouldBeLost()throws Exception {
+		executeDataSet(LOC_INITIAL_DATA_XML);
+		LocationTag locationTag = Context.getLocationService().getLocationTag(1);
+		locationTag.setName("NewName");
+		Context.getLocationService().retireLocationTag(locationTag,"Testing");
+		assertTrue(locationTag.getRetired());
+		Assert.assertNotEquals(locationTag.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringLocationTag_shouldBeLost()throws Exception {
+		executeDataSet(LOC_INITIAL_DATA_XML);
+		LocationTag locationTag = Context.getLocationService().getLocationTag(5);
+		assertTrue(locationTag.getRetired());
+		locationTag.setName("NewName");
+		Context.getLocationService().unretireLocationTag(locationTag);
+		assertFalse(locationTag.getRetired());
+		Assert.assertNotEquals(locationTag.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeRetiringLocationAttributeType_shouldBeLost()throws Exception {
+		executeDataSet(LOC_ATTRIBUTE_DATA_XML);
+		LocationAttributeType locationAttributeType = Context.getLocationService().getLocationAttributeType(1);
+		locationAttributeType.setName("NewName");
+		Context.getLocationService().retireLocationAttributeType(locationAttributeType,"Testing");
+		assertTrue(locationAttributeType.getRetired());
+		Assert.assertNotEquals(locationAttributeType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringLocationAttributeType_shouldBeLost()throws Exception {
+		executeDataSet(LOC_ATTRIBUTE_DATA_XML);
+		LocationAttributeType locationAttributeType = Context.getLocationService().getLocationAttributeType(2);
+		assertTrue(locationAttributeType.getRetired());
+		locationAttributeType.setName("NewName");
+		Context.getLocationService().unretireLocationAttributeType(locationAttributeType);
+		assertFalse(locationAttributeType.getRetired());
+		Assert.assertNotEquals(locationAttributeType.getName(),"NewName");
+	}
 }

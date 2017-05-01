@@ -142,6 +142,7 @@ public interface UserService extends OpenmrsService {
 	 * @param reason
 	 * @throws APIException
 	 * @should retire user and set attributes
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.EDIT_USERS })
 	public User retireUser(User user, String reason) throws APIException;
@@ -152,6 +153,7 @@ public interface UserService extends OpenmrsService {
 	 * @param user
 	 * @throws APIException
 	 * @should unretire and unmark all attributes
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.EDIT_USERS })
 	public User unretireUser(User user) throws APIException;

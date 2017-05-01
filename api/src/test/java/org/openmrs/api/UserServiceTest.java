@@ -32,12 +32,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.rules.ExpectedException;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.PersonName;
-import org.openmrs.Privilege;
-import org.openmrs.Role;
-import org.openmrs.User;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.messagesource.MessageSourceService;
@@ -1350,5 +1345,24 @@ public class UserServiceTest extends BaseContextSensitiveTest {
 		expectedException.expectMessage(messages.getMessage("secret.answer.not.correct"));
 		
 		userService.changePasswordUsingSecretAnswer("wrong answer", "userServiceTest2");
+	}
+
+	@Test
+	public void changesBeforeRetiringUser_shouldBeLost()throws Exception {
+		User user = userService.getUser(502);
+		user.setUsername("NewName");
+		userService.retireUser(user,"Testing");
+		assertTrue(user.getRetired());
+		Assert.assertNotEquals(user.getUsername(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringUser_shouldBeLost()throws Exception {
+		User user = userService.getUser(501);
+		assertTrue(user.getRetired());
+		user.setUsername("NewName");
+		userService.unretireUser(user);
+		assertFalse(user.getRetired());
+		Assert.assertNotEquals(user.getUsername(),"NewName");
 	}
 }

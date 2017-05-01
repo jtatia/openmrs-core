@@ -9,10 +9,6 @@
  */
 package org.openmrs.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,20 +25,15 @@ import org.hibernate.TransientObjectException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.Location;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
-import org.openmrs.VisitAttribute;
-import org.openmrs.VisitAttributeType;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.TestUtil;
 import org.openmrs.util.GlobalPropertiesTestHelper;
 import org.openmrs.util.OpenmrsConstants;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests methods in the {@link VisitService}
@@ -938,5 +929,62 @@ public class VisitServiceTest extends BaseContextSensitiveTest {
 		visitTypes = visitService.getAllVisitTypes(false);
 		assertEquals("get all visit types excluding retired", 2, visitTypes.size());
 	}
-	
+
+	@Test
+	public void changesBeforeVoidingVisit_shouldBeLost()throws Exception {
+		Visit visit = visitService.getVisit(1);
+		visit.setUuid("random uuid");
+		visitService.voidVisit(visit,"Testing");
+		assertTrue(visit.getVoided());
+		assertNotEquals(visit.getUuid(),"random uuid");
+	}
+
+	@Test
+	public void changesBeforeUnvoidingVisit_shouldBeLost()throws Exception {
+		Visit visit = visitService.getVisit(6);
+	     assertTrue(visit.getVoided());
+		visit.setUuid("random uuid");
+		visitService.unvoidVisit(visit);
+		assertFalse(visit.getVoided());
+		assertNotEquals(visit.getUuid(),"random uuid");
+	}
+
+	@Test
+	public void changesBeforeRetiringVisitType_shouldBeLost()throws Exception {
+		VisitType visitType = visitService.getVisitType(1);
+		visitType.setName("NewName");
+		visitService.retireVisitType(visitType,"Testing");
+		assertTrue(visitType.getRetired());
+		assertNotEquals(visitType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringVisitType_shouldBeLost()throws Exception {
+		VisitType visitType = visitService.getVisitType(3);
+		assertTrue(visitType.getRetired());
+		visitType.setName("NewName");
+		visitService.unretireVisitType(visitType);
+		assertFalse(visitType.getRetired());
+		assertNotEquals(visitType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeRetiringVisitAttributeType_shouldBeLost()throws Exception {
+		VisitAttributeType visitAttributeType = visitService.getVisitAttributeType(1);
+		visitAttributeType.setName("NewName");
+		visitService.retireVisitAttributeType(visitAttributeType,"Testing");
+		assertTrue(visitAttributeType.getRetired());
+		assertNotEquals(visitAttributeType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringVisitAttributeType_shouldBeLost()throws Exception {
+		executeDataSet(VISITS_ATTRIBUTES_XML);
+		VisitAttributeType visitAttributeType = visitService.getVisitAttributeType(2);
+		assertTrue(visitAttributeType.getRetired());
+		visitAttributeType.setName("NewName");
+		visitService.unretireVisitAttributeType(visitAttributeType);
+		assertFalse(visitAttributeType.getRetired());
+		assertNotEquals(visitAttributeType.getName(),"NewName");
+	}
 }

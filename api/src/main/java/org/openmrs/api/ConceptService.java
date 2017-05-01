@@ -169,6 +169,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @throws APIException
 	 * @should fail if no reason is given
 	 * @should retire the given concept
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPTS)
 	public Concept retireConcept(Concept conceptOrConceptNumeric, String reason) throws APIException;
@@ -181,6 +182,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @throws APIException
 	 * @return the retired Drug
 	 * @should retire the given Drug
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPTS)
 	public Drug retireDrug(Drug drug, String reason) throws APIException;
@@ -193,6 +195,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @throws APIException
 	 * @should mark drug as not retired
 	 * @should not change attributes of drug that is already not retired
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPTS)
 	public Drug unretireDrug(Drug drug) throws APIException;
@@ -900,6 +903,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @return the retired concept source
 	 * @throws APIException
 	 * @should retire concept source
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.PURGE_CONCEPT_SOURCES)
 	public ConceptSource retireConceptSource(ConceptSource cs, String reason) throws APIException;
@@ -1449,6 +1453,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @throws APIException
 	 * @should retire the specified conceptMapType with the given retire reason
 	 * @should should set the default retire reason if none is given
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPT_MAP_TYPES)
 	public ConceptMapType retireConceptMapType(ConceptMapType conceptMapType, String retireReason) throws APIException;
@@ -1461,6 +1466,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @since 1.9
 	 * @throws APIException
 	 * @should unretire the specified concept map type and drop all retire related fields
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPT_MAP_TYPES)
 	public ConceptMapType unretireConceptMapType(ConceptMapType conceptMapType) throws APIException;
@@ -1587,6 +1593,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @throws APIException
 	 * @should retire the specified concept reference term with the given retire reason
 	 * @should should set the default retire reason if none is given
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPT_REFERENCE_TERMS)
 	public ConceptReferenceTerm retireConceptReferenceTerm(ConceptReferenceTerm conceptReferenceTerm, String retireReason)
@@ -1600,6 +1607,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @since 1.9
 	 * @throws APIException
 	 * @should unretire the specified concept reference term and drop all retire related fields
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPT_REFERENCE_TERMS)
 	public ConceptReferenceTerm unretireConceptReferenceTerm(ConceptReferenceTerm conceptReferenceTerm) throws APIException;
@@ -1889,6 +1897,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @return the retired concept attribute type
 	 * @since 2.0
 	 * @should retire concept type attribute
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPT_ATTRIBUTE_TYPES)
 	public ConceptAttributeType retireConceptAttributeType(ConceptAttributeType conceptAttributeType, String reason);
@@ -1900,6 +1909,7 @@ public interface ConceptService extends OpenmrsService {
 	 * @return the unretire concept attribute type
 	 * @since 2.0
 	 * @should unretire a concept attribute type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_CONCEPT_ATTRIBUTE_TYPES)
 	public ConceptAttributeType unretireConceptAttributeType(ConceptAttributeType conceptAttributeType);

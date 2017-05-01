@@ -136,6 +136,7 @@ public interface ObsService extends OpenmrsService {
 	 * @throws APIException
 	 * @should set voided bit on given obs
 	 * @should fail if reason parameter is empty
+	 * @should all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.EDIT_OBS)
 	public Obs voidObs(Obs obs, String reason) throws APIException;
@@ -147,6 +148,7 @@ public interface ObsService extends OpenmrsService {
 	 * @throws APIException
 	 * @should unset voided bit on given obs
 	 * @should cascade unvoid to child grouped obs
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.EDIT_OBS)
 	public Obs unvoidObs(Obs obs) throws APIException;

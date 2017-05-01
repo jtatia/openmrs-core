@@ -188,6 +188,7 @@ public interface PersonService extends OpenmrsService {
 	 * @should return voided person with given reason
 	 * @should void patient
 	 * @should retire users
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.EDIT_PERSONS })
 	public Person voidPerson(Person person, String reason) throws APIException;
@@ -200,6 +201,7 @@ public interface PersonService extends OpenmrsService {
 	 * @should unvoid the given person
 	 * @should unvoid patient
 	 * @should not unretire users
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.EDIT_PERSONS })
 	public Person unvoidPerson(Person person) throws APIException;
@@ -537,6 +539,7 @@ public interface PersonService extends OpenmrsService {
 	 * @return the newly saved relationship
 	 * @throws APIException
 	 * @should void relationship with the given reason
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.DELETE_RELATIONSHIPS })
 	public Relationship voidRelationship(Relationship relationship, String voidReason) throws APIException;
@@ -548,6 +551,7 @@ public interface PersonService extends OpenmrsService {
 	 * @return the newly unvoided relationship
 	 * @throws APIException
 	 * @should unvoid voided relationship
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.EDIT_RELATIONSHIPS })
 	public Relationship unvoidRelationship(Relationship relationship) throws APIException;

@@ -9,25 +9,24 @@
  */
 package org.openmrs.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.openmrs.EncounterType;
 import org.openmrs.OrderSet;
 import org.openmrs.OrderSetMember;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseContextSensitiveTest;
+
+import static org.junit.Assert.*;
 
 public class OrderSetServiceTest extends BaseContextSensitiveTest {
 	
@@ -355,5 +354,27 @@ public class OrderSetServiceTest extends BaseContextSensitiveTest {
 		orderSet.setDateCreated(new Date());
 		orderSet.setRetired(orderSetRetired);
 		return orderSet;
+	}
+
+	@Test
+	public void changesBeforeRetiringOrderSet_shouldBeLost()throws Exception {
+		executeDataSet(ORDER_SET);
+		OrderSet orderSet = orderSetService.getOrderSet(2000);
+		orderSet.setName("NewName");
+		orderSetService.retireOrderSet(orderSet,"Testing");
+		assertTrue(orderSet.getRetired());
+		assertNotEquals(orderSet.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringOrderSet_shouldBeLost()throws Exception {
+		executeDataSet(ORDER_SET);
+		OrderSet orderSet = orderSetService.getOrderSet(2000);
+		orderSetService.retireOrderSet(orderSet,"Testing");
+		assertTrue(orderSet.getRetired());
+		orderSet.setName("NewName");
+		orderSetService.unretireOrderSet(orderSet);
+		assertFalse(orderSet.getRetired());
+		assertNotEquals(orderSet.getName(),"NewName");
 	}
 }

@@ -2346,4 +2346,47 @@ public class PersonServiceTest extends BaseContextSensitiveTest {
 		assertThat(result, contains(birthplace));
 		assertEquals(result.size(), 1);
 	}
+
+	@Test
+	public void changesMadeBeforeVoidingPerson_shouldBeLost()throws Exception{
+		Person person = personService.getPerson(7);
+		assertFalse(person.getVoided());
+		person.setGender("Female");
+		personService.voidPerson(person,"voiding for testing purposes");
+		assertTrue(person.getVoided());
+		System.out.println(person.getGender());
+		assertFalse(person.getGender().equals("Female"));
+	}
+
+	@Test
+	public void changesMadeBeforeUnVoidingPerson_shouldBeLost()throws Exception{
+		Person person = personService.getPerson(2);
+        personService.voidPerson(person,"voiding for testing purposes");
+		assertTrue(person.getVoided());
+		person.setGender("Female");
+		personService.unvoidPerson(person);
+		assertFalse(person.getVoided());
+		assertFalse(person.getGender().equals("Female"));
+	}
+
+	@Test
+	public void changesMadeBeforeVoidingPersonName_shouldBeLost()throws Exception{
+		PersonName personName = personService.getPersonName(2);
+		assertFalse(personName.getVoided());
+		personName.setMiddleName("Middle");
+		personService.voidPersonName(personName,"voiding for testing purposes");
+		assertTrue(personName.getVoided());
+		assertFalse(personName.getMiddleName().equals("Middle"));
+	}
+
+	@Test
+	public void changesMadeBeforeUnVoidingPersonName_shouldBeLost()throws Exception{
+		PersonName personName = personService.getPersonName(2);
+		personService.voidPersonName(personName,"voiding for testing purposes");
+		assertTrue(personName.getVoided());
+		personName.setDegree("MBA");
+		personService.unvoidPersonName(personName);
+		assertFalse(personName.getVoided());
+		assertFalse(personName.getVoided().equals("MBA"));
+	}
 }

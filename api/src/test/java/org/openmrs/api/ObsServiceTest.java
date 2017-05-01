@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.crypto.spec.OAEPParameterSpec;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
@@ -1971,5 +1972,49 @@ public class ObsServiceTest extends BaseContextSensitiveTest {
 		assertThat(existing.getStatus(), is(Obs.Status.FINAL));
 		assertThat(existing.getVoided(), is(true));
 		assertThat(newObs.getStatus(), is(Obs.Status.FINAL));
+	}
+
+	@Test
+	public void voidingAndUnvoidingObsWithoutChange()throws Exception{
+		executeDataSet(INITIAL_OBS_XML);
+		ObsService os = Context.getObsService();
+		Obs oParent = os.getObs(2); //obs id 2 has 2 child obs
+		assertFalse(oParent.getGroupMembers(true).isEmpty());
+		assertFalse(oParent.getGroupMembers(false).isEmpty());
+		Obs ob = os.voidObs(oParent,"void");
+		assertTrue(ob.getVoided());
+		Obs obs = os.unvoidObs(ob);
+		assertFalse(obs.getVoided());
+		assertEquals(ob,obs);
+		assertEquals(ob,oParent);
+	}
+
+	@Test
+	public void changesMadeBeforeVoidingObs_shouldBeLost()throws Exception{
+		executeDataSet(INITIAL_OBS_XML);
+		ObsService os = Context.getObsService();
+		Obs oParent= os.getObs(2);
+		assertNull(oParent.getComment());
+		oParent.setComment("Making change");
+		assertNotNull(oParent.getComment());
+		Obs obs = os.voidObs(oParent,"void");
+		assertTrue(obs.getVoided());
+		assertEquals(oParent,obs);
+		assertEquals(oParent.getVoidReason(),"void");
+		assertNull(oParent.getComment());
+	}
+
+	@Test
+	public  void changesMadeBeforeUnvoiding_shouldBeLost()throws Exception{
+		executeDataSet(INITIAL_OBS_XML);
+		ObsService os = Context.getObsService();
+		Obs oParent = os.getObs(10);
+		assertTrue(oParent.getVoided());
+		oParent.setComment("making change");
+		Obs obs = os.unvoidObs(oParent);
+		assertFalse(oParent.getVoided());
+		System.out.println(obs.getComment());
+		assertEquals(oParent,obs);
+		assertFalse(oParent.getComment().contains("making change"));
 	}
 }

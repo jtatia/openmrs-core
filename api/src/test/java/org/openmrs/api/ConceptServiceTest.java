@@ -16,12 +16,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.openmrs.test.OpenmrsMatchers.hasConcept;
 import static org.openmrs.test.OpenmrsMatchers.hasId;
 import static org.openmrs.test.TestUtil.containsId;
@@ -46,33 +41,7 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
-import org.openmrs.ConceptAttributeType;
-import org.openmrs.ConceptClass;
-import org.openmrs.ConceptComplex;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptDescription;
-import org.openmrs.ConceptMap;
-import org.openmrs.ConceptMapType;
-import org.openmrs.ConceptName;
-import org.openmrs.ConceptNameTag;
-import org.openmrs.ConceptNumeric;
-import org.openmrs.ConceptProposal;
-import org.openmrs.ConceptReferenceTerm;
-import org.openmrs.ConceptSearchResult;
-import org.openmrs.ConceptSet;
-import org.openmrs.ConceptSource;
-import org.openmrs.ConceptStopWord;
-import org.openmrs.Drug;
-import org.openmrs.DrugIngredient;
-import org.openmrs.Encounter;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Location;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.User;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
@@ -3509,5 +3478,101 @@ public class ConceptServiceTest extends BaseContextSensitiveTest {
 	
 		Assert.assertEquals(1, searchResults.size());
 		assertThat(searchResults.get(0).getWord(), is("SALBUTAMOL INHALER NOT"));
+	}
+
+	@Test
+	public void changesMadeBeforeRetiringConcept_shouldBeLost()throws Exception{
+		Concept concept = conceptService.getConcept(3);
+		concept.setVersion("2.0");
+		conceptService.retireConcept(concept,"Testing");
+		assertTrue(concept.getRetired());
+		assertNotEquals(concept.getVersion(),"2.0");
+	}
+
+	@Test
+	public void changesMadeBeforeRetiringDrug_shouldBeLost()throws Exception{
+		Drug drug = conceptService.getDrug(2);
+		drug.setName("NewData");
+		conceptService.retireDrug(drug,"testing");
+		assertTrue(drug.getRetired());
+		Assert.assertNotEquals(drug.getName(),"NewData");
+	}
+
+	@Test
+	public void changesMadeBeforeUnretiringDrug_shouldBeLost()throws Exception{
+		Drug drug = conceptService.getDrug(11);
+		assertTrue(drug.getRetired());
+		drug.setName("NewData");
+		conceptService.unretireDrug(drug);
+		assertFalse(drug.getRetired());
+		Assert.assertNotEquals(drug.getName(),"NewData");
+	}
+
+	@Test
+	public void changesBeforeRetiringConceptMapType_shouldBeLost()throws Exception {
+		ConceptMapType conceptMapType = conceptService.getConceptMapType(1);
+		conceptMapType.setName("NewName");
+		conceptService.retireConceptMapType(conceptMapType,"Testing");
+		assertTrue(conceptMapType.getRetired());
+		Assert.assertNotEquals(conceptMapType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringConceptMapType_shouldBeLost()throws Exception {
+		ConceptMapType conceptMapType = conceptService.getConceptMapType(6);
+		assertTrue(conceptMapType.getRetired());
+		conceptMapType.setName("NewName");
+		conceptService.unretireConceptMapType(conceptMapType);
+		assertFalse(conceptMapType.getRetired());
+		Assert.assertNotEquals(conceptMapType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeRetiringConceptReferenceTerm_shouldBeLost()throws Exception {
+		ConceptReferenceTerm conceptReferenceTerm = conceptService.getConceptReferenceTerm(1);
+		conceptReferenceTerm.setName("NewName");
+		conceptService.retireConceptReferenceTerm(conceptReferenceTerm,"Testing");
+		assertTrue(conceptReferenceTerm.getRetired());
+		Assert.assertNotEquals(conceptReferenceTerm.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringConceptReferenceTerm_shouldBeLost()throws Exception {
+		ConceptReferenceTerm conceptReferenceTerm = conceptService.getConceptReferenceTerm(11);
+		assertTrue(conceptReferenceTerm.getRetired());
+		conceptReferenceTerm.setName("NewName");
+		conceptService.unretireConceptReferenceTerm(conceptReferenceTerm);
+		assertFalse(conceptReferenceTerm.getRetired());
+		Assert.assertNotEquals(conceptReferenceTerm.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeRetiringConceptAttributeType_shouldBeLost()throws Exception {
+		executeDataSet(CONCEPT_ATTRIBUTE_TYPE_XML);
+		ConceptAttributeType conceptAttributeType = conceptService.getConceptAttributeType(1);
+		conceptAttributeType.setName("NewName");
+		conceptService.retireConceptAttributeType(conceptAttributeType,"Testing");
+		assertTrue(conceptAttributeType.getRetired());
+		Assert.assertNotEquals(conceptAttributeType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringConceptAttributeType_shouldBeLost()throws Exception {
+		executeDataSet(CONCEPT_ATTRIBUTE_TYPE_XML);
+		ConceptAttributeType conceptAttributeType = conceptService.getConceptAttributeType(2);
+		assertTrue(conceptAttributeType.getRetired());
+		conceptAttributeType.setName("NewName");
+		conceptService.unretireConceptAttributeType(conceptAttributeType);
+		assertFalse(conceptAttributeType.getRetired());
+		Assert.assertNotEquals(conceptAttributeType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeRetiringConcepSource_shouldBeLost()throws Exception {
+		ConceptSource conceptSource = conceptService.getConceptSource(1);
+		conceptSource.setName("NewName");
+		conceptService.retireConceptSource(conceptSource,"Testing");
+		assertTrue(conceptSource.getRetired());
+		Assert.assertNotEquals(conceptSource.getName(),"NewName");
 	}
 }

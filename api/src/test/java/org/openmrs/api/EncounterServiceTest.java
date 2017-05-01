@@ -2992,4 +2992,63 @@ public class EncounterServiceTest extends BaseContextSensitiveTest {
 		
 		assertEquals("Two New Order Groups Get Saved", 2, orderGroups.size());
 	}
+
+	@Test
+	public void changesBeforeVoidingEncounter_shouldBeLost()throws Exception {
+		Encounter encounter = Context.getEncounterService().getEncounter(3);
+		encounter.setUuid("92e63d19-9b11-4bbf-8622-85bb191b2409");
+		Context.getEncounterService().voidEncounter(encounter,"Testing");
+		assertTrue(encounter.getVoided());
+		Assert.assertNotEquals(encounter.getUuid(),"92e63d19-9b11-4bbf-8622-85bb191b2409");
+	}
+
+	@Test
+	public void changesBeforeUnvoidingEncounter_shouldBeLost()throws Exception {
+		executeDataSet(UNIQUE_ENC_WITH_PAGING_XML);
+		Encounter encounter = Context.getEncounterService().getEncounter(19);
+		assertTrue(encounter.getVoided());
+		encounter.setUuid("92e63d19-9b11-4bbf-8622-85bb191b2409");
+		Context.getEncounterService().unvoidEncounter(encounter);
+		assertFalse(encounter.getVoided());
+		Assert.assertNotEquals(encounter.getUuid(),"92e63d19-9b11-4bbf-8622-85bb191b2409");
+	}
+
+	@Test
+	public void changesBeforeRetiringEncounterType_shouldBeLost()throws Exception {
+		EncounterType encounterType = Context.getEncounterService().getEncounterType(1);
+		encounterType.setName("NewName");
+		Context.getEncounterService().retireEncounterType(encounterType,"Testing");
+		assertTrue(encounterType.getRetired());
+		Assert.assertNotEquals(encounterType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringEncounterType_shouldBeLost()throws Exception {
+		EncounterType encounterType = Context.getEncounterService().getEncounterType(6);
+		assertTrue(encounterType.getRetired());
+		encounterType.setName("NewName");
+		Context.getEncounterService().unretireEncounterType(encounterType);
+		assertFalse(encounterType.getRetired());
+		Assert.assertNotEquals(encounterType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeRetiringEncounterRole_shouldBeLost()throws Exception {
+		EncounterRole encounterRole = Context.getEncounterService().getEncounterRole(1);
+		encounterRole.setName("NewName");
+		Context.getEncounterService().retireEncounterRole(encounterRole,"Testing");
+		assertTrue(encounterRole.getRetired());
+		Assert.assertNotEquals(encounterRole.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringEncounterRole_shouldBeLost()throws Exception {
+		executeDataSet(ENC_INITIAL_DATA_XML);
+		EncounterRole encounterRole = Context.getEncounterService().getEncounterRole(2);
+		assertTrue(encounterRole.getRetired());
+		encounterRole.setName("NewName");
+		Context.getEncounterService().unretireEncounterRole(encounterRole);
+		assertFalse(encounterRole.getRetired());
+		Assert.assertNotEquals(encounterRole.getName(),"NewName");
+	}
 }

@@ -15,6 +15,7 @@ import org.openmrs.Retireable;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.aop.RequiredDataAdvice;
+import org.openmrs.api.context.Context;
 
 /**
  * This is the super interface for all unretire* actions that take place on all services. The
@@ -34,7 +35,7 @@ import org.openmrs.aop.RequiredDataAdvice;
  */
 @Handler(supports = Retireable.class)
 public class BaseUnretireHandler implements UnretireHandler<Retireable> {
-	
+
 	/**
 	 * Called around every unretire* method to set {@link Retireable} attributes to null.<br>
 	 * <br>
@@ -47,14 +48,15 @@ public class BaseUnretireHandler implements UnretireHandler<Retireable> {
 	 * @should unset the retire reason
 	 * @should not act on already unretired objects
 	 * @should not act on retired objects with a different dateRetired
+	 * @should loose any changes made before unretiring
 	 */
 	@Override
 	public void handle(Retireable retireableObject, User retiringUser, Date origParentRetiredDate, String unused) {
-		
 		// only act on retired objects
 		if (retireableObject.getRetired()
 		        && (origParentRetiredDate == null || origParentRetiredDate.equals(retireableObject.getDateRetired()))) {
 			// only act on retired objects that match the same date retired as the parent
+			Context.refreshEntity(retireableObject);
 			retireableObject.setRetired(false);
 			retireableObject.setRetiredBy(null);
 			retireableObject.setDateRetired(null);

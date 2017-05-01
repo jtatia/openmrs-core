@@ -185,6 +185,7 @@ public interface PatientService extends OpenmrsService {
 	 * @should return null when patient is null
 	 * @should void person
 	 * @should retire users
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.DELETE_PATIENTS })
 	public Patient voidPatient(Patient patient, String reason) throws APIException;
@@ -198,6 +199,7 @@ public interface PatientService extends OpenmrsService {
 	 * @should return unvoided patient
 	 * @should unvoid person
 	 * @should not unretire users
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.DELETE_PATIENTS })
 	public Patient unvoidPatient(Patient patient) throws APIException;
@@ -358,6 +360,7 @@ public interface PatientService extends OpenmrsService {
 	 * @should throw error when reason is empty
 	 * @should throw error when trying to retire a patient identifier type while patient identifier
 	 *         types are locked
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_IDENTIFIER_TYPES })
 	public PatientIdentifierType retirePatientIdentifierType(PatientIdentifierType patientIdentifierType, String reason)
@@ -373,6 +376,7 @@ public interface PatientService extends OpenmrsService {
 	 * @should return unretired patient identifier type
 	 * @should throw error when trying to unretire a patient identifier type while patient
 	 *         identifier types are locked
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_IDENTIFIER_TYPES })
 	public PatientIdentifierType unretirePatientIdentifierType(PatientIdentifierType patientIdentifierType)
@@ -671,6 +675,7 @@ public interface PatientService extends OpenmrsService {
 	 * @should throw an APIException if the reason is null
 	 * @should throw an APIException if the reason is an empty string
 	 * @should throw an APIException if the reason is a white space character
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.DELETE_PATIENT_IDENTIFIERS })
 	public PatientIdentifier voidPatientIdentifier(PatientIdentifier patientIdentifier, String reason) throws APIException;
@@ -785,6 +790,7 @@ public interface PatientService extends OpenmrsService {
 	 * @param allergy
 	 * @param reason
 	 * @throws APIException
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.DELETE_ALLERGIES })
 	public void voidAllergy(Allergy allergy, String reason) throws APIException;

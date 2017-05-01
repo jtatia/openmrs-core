@@ -102,6 +102,7 @@ public interface VisitService extends OpenmrsService {
 	 * @param reason the reason why the visit type is retired.
 	 * @return the visit type that has been retired.
 	 * @should retire given visit type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_VISIT_TYPES })
 	VisitType retireVisitType(VisitType visitType, String reason);
@@ -112,6 +113,7 @@ public interface VisitService extends OpenmrsService {
 	 * @param visitType the visit type to unretire.
 	 * @return the unretired visit type
 	 * @should unretire given visit type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_VISIT_TYPES })
 	VisitType unretireVisitType(VisitType visitType);
@@ -198,6 +200,7 @@ public interface VisitService extends OpenmrsService {
 	 * @throws APIException
 	 * @should void the visit and set the voidReason
 	 * @should void encounters with visit
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.DELETE_VISITS)
 	public Visit voidVisit(Visit visit, String reason) throws APIException;
@@ -210,6 +213,7 @@ public interface VisitService extends OpenmrsService {
 	 * @throws APIException
 	 * @should unvoid the visit and unset all the void related fields
 	 * @should unvoid encounters voided with visit
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.DELETE_VISITS)
 	public Visit unvoidVisit(Visit visit) throws APIException;
@@ -337,6 +341,7 @@ public interface VisitService extends OpenmrsService {
 	 * @param visitAttributeType
 	 * @return the visitAttribute retired
 	 * @should retire a visit attribute type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_VISIT_ATTRIBUTE_TYPES)
 	VisitAttributeType retireVisitAttributeType(VisitAttributeType visitAttributeType, String reason);
@@ -347,6 +352,7 @@ public interface VisitService extends OpenmrsService {
 	 * @param visitAttributeType
 	 * @return the VisitAttributeType unretired
 	 * @should unretire a retired visit attribute type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_VISIT_ATTRIBUTE_TYPES)
 	VisitAttributeType unretireVisitAttributeType(VisitAttributeType visitAttributeType);

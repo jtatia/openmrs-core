@@ -164,6 +164,7 @@ public interface OrderService extends OpenmrsService {
 	 * @should void an order
 	 * @should unset dateStopped of the previous order if the specified order is a discontinuation
 	 * @should unset dateStopped of the previous order if the specified order is a revision
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.DELETE_ORDERS)
 	public Order voidOrder(Order order, String voidReason) throws APIException;
@@ -261,6 +262,7 @@ public interface OrderService extends OpenmrsService {
 	 * @should stop the previous order if the specified order is a revision
 	 * @should fail for a discontinuation order if the previousOrder is inactive
 	 * @should fail for a revise order if the previousOrder is inactive
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.DELETE_ORDERS)
 	public Order unvoidOrder(Order order) throws APIException;
@@ -532,6 +534,7 @@ public interface OrderService extends OpenmrsService {
 	 * @return the retired order frequency
 	 * @since 1.10
 	 * @should retire given order frequency
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_ORDER_FREQUENCIES)
 	public OrderFrequency retireOrderFrequency(OrderFrequency orderFrequency, String reason);
@@ -543,6 +546,7 @@ public interface OrderService extends OpenmrsService {
 	 * @return the unretired order frequency
 	 * @since 1.10
 	 * @should unretire given order frequency
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_ORDER_FREQUENCIES)
 	public OrderFrequency unretireOrderFrequency(OrderFrequency orderFrequency);
@@ -627,6 +631,7 @@ public interface OrderService extends OpenmrsService {
 	 * @return the retired order type
 	 * @since 1.10
 	 * @should retire order type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_ORDER_TYPES)
 	public OrderType retireOrderType(OrderType orderType, String reason);
@@ -638,6 +643,7 @@ public interface OrderService extends OpenmrsService {
 	 * @return the unretired order type
 	 * @since 1.10
 	 * @should unretire order type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_ORDER_TYPES)
 	public OrderType unretireOrderType(OrderType orderType);

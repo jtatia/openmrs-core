@@ -191,6 +191,7 @@ public interface EncounterService extends OpenmrsService {
 	 * @should throw error with null reason parameter
 	 * @should not void providers
 	 * @should fail if user is not supposed to edit encounters of type of given encounter
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.EDIT_ENCOUNTERS })
 	public Encounter voidEncounter(Encounter encounter, String reason);
@@ -203,6 +204,7 @@ public interface EncounterService extends OpenmrsService {
 	 * @should cascade unvoid to orders
 	 * @should unvoid and unmark all attributes
 	 * @should fail if user is not supposed to edit encounters of type of given encounter
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.EDIT_ENCOUNTERS })
 	public Encounter unvoidEncounter(Encounter encounter) throws APIException;
@@ -329,6 +331,7 @@ public interface EncounterService extends OpenmrsService {
 	 * @should throw error if given null reason parameter
 	 * @should should throw error when trying to retire encounter type when encounter types are
 	 *         locked
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_ENCOUNTER_TYPES })
 	public EncounterType retireEncounterType(EncounterType encounterType, String reason) throws APIException;
@@ -342,6 +345,7 @@ public interface EncounterService extends OpenmrsService {
 	 * @should unretire type and unmark attributes
 	 * @should should throw error when trying to unretire encounter type when encounter types are
 	 *         locked
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_ENCOUNTER_TYPES })
 	public EncounterType unretireEncounterType(EncounterType encounterType) throws APIException;
@@ -567,6 +571,7 @@ public interface EncounterService extends OpenmrsService {
 	 * @since 1.9
 	 * @should retire type and set attributes
 	 * @should throw error if given null reason parameter
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_ENCOUNTER_ROLES })
 	public EncounterRole retireEncounterRole(EncounterRole encounterRole, String reason) throws APIException;
@@ -579,6 +584,7 @@ public interface EncounterService extends OpenmrsService {
 	 * @throws APIException
 	 * @since 1.9
 	 * @should unretire type and unmark attributes
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_ENCOUNTER_ROLES })
 	public EncounterRole unretireEncounterRole(EncounterRole encounterType) throws APIException;

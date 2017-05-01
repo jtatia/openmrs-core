@@ -55,6 +55,7 @@ public interface ProviderService extends OpenmrsService {
 	 * @param provider provider to retire
 	 * @param reason reason why the provider is retired
 	 * @should retire a provider
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_PROVIDERS })
 	public void retireProvider(Provider provider, String reason);
@@ -64,6 +65,7 @@ public interface ProviderService extends OpenmrsService {
 	 * 
 	 * @param provider provider to unretire
 	 * @should unretire a provider
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_PROVIDERS })
 	public Provider unretireProvider(Provider provider);
@@ -276,6 +278,7 @@ public interface ProviderService extends OpenmrsService {
 	 * @param providerAttributeType the provider type attribute to unretire
 	 * @return the unretire provider attribute type
 	 * @should unretire a provider attribute type
+	 * @should loose all changes made after last save
 	 */
 	public ProviderAttributeType unretireProviderAttributeType(ProviderAttributeType providerAttributeType);
 	
@@ -284,6 +287,7 @@ public interface ProviderService extends OpenmrsService {
 	 * 
 	 * @param providerAttributeType provider attribute type to be deleted
 	 * @should delete a provider attribute type
+	 * @should loose all changes made after last save
 	 */
 	public void purgeProviderAttributeType(ProviderAttributeType providerAttributeType);
 	

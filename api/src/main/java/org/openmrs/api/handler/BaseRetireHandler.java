@@ -15,6 +15,7 @@ import org.openmrs.Retireable;
 import org.openmrs.User;
 import org.openmrs.annotation.Handler;
 import org.openmrs.aop.RequiredDataAdvice;
+import org.openmrs.api.context.Context;
 
 /**
  * This is the default class for all retire* actions that take place on all services. The
@@ -51,13 +52,13 @@ public class BaseRetireHandler implements RetireHandler<Retireable> {
 	 * @should not set dateRetired if non null
 	 * @should not set the retireReason if already voided
 	 * @should set retiredBy even if retired bit is set but retiredBy is null
+	 * @should loose any changes made after last save
 	 */
 	@Override
 	public void handle(Retireable retireableObject, User retiringUser, Date retireDate, String retireReason) {
-		
 		// skip over doing retire stuff if already retired
 		if (!retireableObject.getRetired() || retireableObject.getRetiredBy() == null) {
-			
+			Context.refreshEntity(retireableObject);
 			retireableObject.setRetired(true);
 			retireableObject.setRetireReason(retireReason);
 			

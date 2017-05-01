@@ -207,6 +207,7 @@ public interface LocationService extends OpenmrsService {
 	 * @param location location to be retired
 	 * @param reason is the reason why the location is being retired
 	 * @should retire location successfully
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_LOCATIONS })
 	public Location retireLocation(Location location, String reason) throws APIException;
@@ -219,6 +220,7 @@ public interface LocationService extends OpenmrsService {
 	 * @return the newly unretired location
 	 * @throws APIException
 	 * @should unretire retired location
+	 * @should loose all changes made after last save
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_LOCATIONS })
 	public Location unretireLocation(Location location) throws APIException;
@@ -314,6 +316,7 @@ public interface LocationService extends OpenmrsService {
 	 * @param reason is the reason why the location tag is being retired
 	 * @should retire location tag successfully
 	 * @should retire location tag with given reason
+	 * @should loose all changes made after last save
 	 * @since 1.5
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_LOCATION_TAGS })
@@ -327,6 +330,7 @@ public interface LocationService extends OpenmrsService {
 	 * @return the newly unretired location tag
 	 * @throws APIException
 	 * @should unretire retired location tag
+	 * @should loose all changes made after last save
 	 * @since 1.5
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_LOCATION_TAGS })
@@ -453,6 +457,7 @@ public interface LocationService extends OpenmrsService {
 	 * @return the locationAttribute retired
 	 * @since 1.9
 	 * @should retire a location attribute type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_LOCATION_ATTRIBUTE_TYPES)
 	LocationAttributeType retireLocationAttributeType(LocationAttributeType locationAttributeType, String reason);
@@ -464,6 +469,7 @@ public interface LocationService extends OpenmrsService {
 	 * @return the LocationAttributeType unretired
 	 * @since 1.9
 	 * @should unretire a retired location attribute type
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_LOCATION_ATTRIBUTE_TYPES)
 	LocationAttributeType unretireLocationAttributeType(LocationAttributeType locationAttributeType);

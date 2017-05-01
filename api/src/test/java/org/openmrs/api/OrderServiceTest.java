@@ -3413,4 +3413,70 @@ public class OrderServiceTest extends BaseContextSensitiveTest {
 		expectedException.expectMessage("Cannot add a member which is out of range of the list");
 		secondSavedOrderGroup.addOrder(newOrderWithInvalidPosition, secondSavedOrderGroup.getOrders().size() + 1);
 	}
+
+	@Test
+	public void changesMadeBeforeVoidingOrder_shouldBeLost()throws Exception {
+		Order order = orderService.getOrder(2);
+	    assertFalse(order.getVoided());
+	    order.setInstructions("Making Testing changes");
+	    orderService.voidOrder(order,"Void");
+	    assertNotEquals(order.getInstructions(),"Making Testing changes");
+	}
+
+	@Test
+	public void changesMadeBeforeUnVoidingOrder_shouldBeLost()throws Exception {
+		Order order = orderService.getOrder(8);
+		assertTrue(order.getVoided());
+		order.setInstructions("Making Testing changes");
+		orderService.unvoidOrder(order);
+		assertNotEquals(order.getInstructions(),"Making Testing changes");
+	}
+
+	@Test
+	public void changesMadeBeforeRetiringOrderFrequency_shouldBeLost()throws Exception{
+		executeDataSet(OTHER_ORDER_FREQUENCIES_XML);
+		OrderFrequency orderFrequency = orderService.getOrderFrequency(100);
+		assertFalse(orderFrequency.getRetired());
+		orderFrequency.setFrequencyPerDay(2.0);
+		assertTrue(orderFrequency.getFrequencyPerDay().equals(2.0));
+		orderService.retireOrderFrequency(orderFrequency,"Retire");
+		assertTrue(orderFrequency.getRetired());
+		assertTrue(orderFrequency.getRetireReason().equals("Retire"));
+		assertNotEquals(orderFrequency.getFrequencyPerDay(),2.0);
+	}
+
+	@Test
+	public void changesMadeBeforeUnretiringOrderFrequency_shouldBeLost()throws Exception{
+		executeDataSet(OTHER_ORDER_FREQUENCIES_XML);
+		OrderFrequency orderFrequency = orderService.getOrderFrequency(103);
+		assertNotNull(orderFrequency);
+		assertTrue(orderFrequency.getRetired());
+		orderFrequency.setFrequencyPerDay(2.0);
+		assertTrue(orderFrequency.getFrequencyPerDay().equals(2.0));
+		orderService.unretireOrderFrequency(orderFrequency);
+		assertFalse(orderFrequency.getRetired());
+		assertNotEquals(orderFrequency.getFrequencyPerDay(),2.0);
+	}
+
+	@Test
+	public void changesMadeBeforeRetiringOrderType_shouldBeLost()throws Exception{
+		executeDataSet(ORDER_SET);
+		OrderType orderType = orderService.getOrderType(100);
+		orderType.setName("New Name");
+		orderService.retireOrderType(orderType,"Retire");
+		assertTrue(orderType.getRetired());
+		assertEquals(orderType.getRetireReason(),"Retire");
+		assertFalse(orderType.getName().equals("New Name"));
+	}
+
+	@Test
+	public void changesMadeBeforeUnretiringOrderType_shouldBeLost()throws Exception{
+        executeDataSet(ORDER_SET);
+		OrderType orderType = orderService.getOrderType(100);
+		orderService.retireOrderType(orderType,"Retire");
+		assertTrue(orderType.getRetired());
+		orderType.setName("New Name");
+		orderService.unretireOrderType(orderType);
+		assertFalse(orderType.getName().equals("New Name"));
+	}
 }

@@ -207,6 +207,7 @@ public interface FormService extends OpenmrsService {
 	 * @param reason the retiredReason to set
 	 * @throws APIException
 	 * @should set the retired bit before saving
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_FORMS)
 	public void retireForm(Form form, String reason) throws APIException;
@@ -217,6 +218,7 @@ public interface FormService extends OpenmrsService {
 	 * @param form the Form to revive
 	 * @throws APIException
 	 * @should unset the retired bit before saving
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_FORMS)
 	public void unretireForm(Form form) throws APIException;
@@ -539,6 +541,7 @@ public interface FormService extends OpenmrsService {
 	 * @return the Field that was retired
 	 * @throws APIException
 	 * @should set the retired bit before saving
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_FORMS)
 	public Field retireField(Field field) throws APIException;
@@ -550,6 +553,7 @@ public interface FormService extends OpenmrsService {
 	 * @return the Field that was unretired
 	 * @throws APIException
 	 * @should unset the retired bit before saving
+	 * @should loose all changes made after last save
 	 */
 	@Authorized(PrivilegeConstants.MANAGE_FORMS)
 	public Field unretireField(Field field) throws APIException;

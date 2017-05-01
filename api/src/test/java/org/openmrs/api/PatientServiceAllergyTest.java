@@ -484,4 +484,15 @@ public class PatientServiceAllergyTest extends BaseContextSensitiveTest {
         allergyService.setAllergies(patient, allergies);
         Assert.assertFalse(allergy.getAllergen().isCoded());
     }
+
+    @Test
+	public void changesMadeBeforeVoidingAllergy_shouldBeLost()throws Exception {
+	Allergy allergy = allergyService.getAllergy(3);
+	Assert.assertFalse(allergy.getVoided());
+	allergy.setAllergenType("FOOD");
+	allergyService.voidAllergy(allergy,"testing purposes");
+	Assert.assertTrue(allergy.getVoided());
+	AllergenType allergenType = AllergenType.FOOD;
+	Assert.assertNotEquals(allergy.getAllergenType(),allergenType);
+	}
 }

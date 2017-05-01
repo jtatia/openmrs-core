@@ -12,13 +12,7 @@ package org.openmrs.api;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.openmrs.test.TestUtil.assertCollectionContentsEquals;
 import static org.openmrs.util.AddressMatcher.containsAddress;
 import static org.openmrs.util.NameMatcher.containsFullName;
@@ -2744,14 +2738,14 @@ public class PatientServiceTest extends BaseContextSensitiveTest {
 	 */
 	@Test
 	public void unvoidPatient_shouldUnvoidPerson() throws Exception {
-		//given
+		///given
 		Patient patient = patientService.getPatient(2);
 		patientService.voidPatient(patient, "reason");
 		Assert.assertTrue(patient.getPersonVoided());
-		
+
 		//when
 		patientService.unvoidPatient(patient);
-		
+
 		//then
 		Assert.assertFalse(patient.getPersonVoided());
 	}
@@ -3238,4 +3232,32 @@ public class PatientServiceTest extends BaseContextSensitiveTest {
 		assertEquals(2, encounterService.getEncounter(57).getObsAtTopLevel(true).size());
 	}
 
+	@Test
+	public void changesMadeBeforeRetiringPatientIdentifierType_shouldBeLost()throws Exception{
+		PatientIdentifierType patientIdentifierType = patientService.getPatientIdentifierType(1);
+		patientIdentifierType.setName("NewName");
+		patientService.retirePatientIdentifierType(patientIdentifierType,"voiding for testing purposes");
+		assertTrue(patientIdentifierType.getRetired());
+		assertNotEquals(patientIdentifierType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesMadeBeforeUnRetiringPatientIdentifierType_shouldBeLost()throws Exception{
+		PatientIdentifierType patientIdentifierType = patientService.getPatientIdentifierType(1);
+		patientService.retirePatientIdentifierType(patientIdentifierType,"voiding for testing purposes");
+		assertTrue(patientIdentifierType.getRetired());
+		patientIdentifierType.setName("NewName");
+		patientService.unretirePatientIdentifierType(patientIdentifierType);
+		assertFalse(patientIdentifierType.getRetired());
+		assertNotEquals(patientIdentifierType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesMadeBeforeVoidingPatientIdentifier_shouldBeLost()throws Exception{
+		PatientIdentifier patientIdentifier = patientService.getPatientIdentifier(1);
+		patientIdentifier.setIdentifier("Temp");
+		patientService.voidPatientIdentifier(patientIdentifier,"voiding for testing purposes");
+		assertTrue(patientIdentifier.getVoided());
+		assertNotEquals(patientIdentifier.getIdentifier(),"Temp");
+	}
 }

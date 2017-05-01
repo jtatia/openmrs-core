@@ -29,12 +29,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Person;
-import org.openmrs.PersonName;
-import org.openmrs.Provider;
-import org.openmrs.ProviderAttribute;
-import org.openmrs.ProviderAttributeType;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 import org.openmrs.test.BaseContextSensitiveTest;
@@ -524,5 +519,45 @@ public class ProviderServiceTest extends BaseContextSensitiveTest {
 		person.setNames(personNames);
 		return person;
 	}
-	
+
+	@Test
+	public void changesBeforeRetiringProvider_shouldBeLost()throws Exception {
+		Provider provider = Context.getProviderService().getProvider(1);
+		provider.setIdentifier("Temp");
+		Context.getProviderService().retireProvider(provider,"Testing");
+		assertTrue(provider.getRetired());
+		Assert.assertNotEquals(provider.getIdentifier(),"Temp");
+	}
+
+	@Test
+	public void changesBeforeUnretiringProvider_shouldBeLost()throws Exception {
+		executeDataSet(PROVIDERS_INITIAL_XML);
+		Provider provider = Context.getProviderService().getProvider(6);
+		assertTrue(provider.getRetired());
+		provider.setIdentifier("Temp");
+		Context.getProviderService().unretireProvider(provider);
+		assertFalse(provider.getRetired());
+		Assert.assertNotEquals(provider.getIdentifier(),"Temp");
+	}
+
+	@Test
+	public void changesBeforeRetiringProviderAttributeType_shouldBeLost()throws Exception {
+		executeDataSet(PROVIDER_ATTRIBUTE_TYPES_XML);
+		ProviderAttributeType providerAttributeType = Context.getProviderService().getProviderAttributeType(1);
+		providerAttributeType.setName("NewName");
+		Context.getProviderService().retireProviderAttributeType(providerAttributeType,"Testing");
+		assertTrue(providerAttributeType.getRetired());
+		Assert.assertNotEquals(providerAttributeType.getName(),"NewName");
+	}
+
+	@Test
+	public void changesBeforeUnretiringProviderAttributeType_shouldBeLost()throws Exception {
+		executeDataSet(PROVIDER_ATTRIBUTE_TYPES_XML);
+		ProviderAttributeType providerAttributeType = Context.getProviderService().getProviderAttributeType(2);
+		assertTrue(providerAttributeType.getRetired());
+		providerAttributeType.setName("NewName");
+		Context.getProviderService().unretireProviderAttributeType(providerAttributeType);
+		assertFalse(providerAttributeType.getRetired());
+		Assert.assertNotEquals(providerAttributeType.getName(),"NewName");
+	}
 }

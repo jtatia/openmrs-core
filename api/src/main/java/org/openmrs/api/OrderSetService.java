@@ -80,6 +80,7 @@ public interface OrderSetService extends OpenmrsService {
 	 * @param orderSet Specifies the OrderSet to be retired
 	 * @param retireReason Specifies the reason why the OrderSet has to be retired
 	 * @return an orderSet
+	 * @should loose all changes made after last save
 	 * @throws APIException
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_ORDER_SETS })
@@ -90,6 +91,7 @@ public interface OrderSetService extends OpenmrsService {
 	 * 
 	 * @param orderSet Specifies the OrderSet to be retired
 	 * @return an orderSet
+	 * @should loose all changes made after last save
 	 * @throws APIException
 	 */
 	@Authorized( { PrivilegeConstants.MANAGE_ORDER_SETS })
